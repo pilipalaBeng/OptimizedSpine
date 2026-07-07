@@ -1,0 +1,16 @@
+{
+  "name": "OptimizedSpine.Runtime",
+  "references": [
+    "spine-unity",
+    "spine-csharp"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

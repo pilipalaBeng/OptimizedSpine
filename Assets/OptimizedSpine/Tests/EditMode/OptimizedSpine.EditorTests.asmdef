@@ -1,0 +1,22 @@
+{
+  "name": "OptimizedSpine.EditorTests",
+  "references": [
+    "OptimizedSpine.Runtime",
+    "spine-unity",
+    "spine-csharp"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ],
+  "noEngineReferences": false
+}
