@@ -2,6 +2,7 @@
   "name": "OptimizedSpine.EditorTests",
   "references": [
     "OptimizedSpine.Runtime",
+    "OptimizedSpine.Editor",
     "spine-unity",
     "spine-csharp"
   ],

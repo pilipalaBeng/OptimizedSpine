@@ -26,6 +26,12 @@
 - `OptimizedSpine/Build Baseline Scene`: 重新生成 baseline 场景。
 - `OptimizedSpine/Validate Baseline Spawner`: 在编辑器中临时生成 3 个 Spine 实例并清理，用于快速验证 spawner 创建链路。
 
+## Analyzer Tool
+
+- `OptimizedSpine/Spine Analyzer`: opens a read-only Editor Window for selected Spine assets or objects.
+- The analyzer reports static metrics and candidate hints for material count, atlas count, slots, skins, animations, attachments, `Use Single Submesh`, `Immutable Triangles`, and `Update When Invisible`.
+- It does not auto-apply changes or claim measured runtime gains.
+
 ## Project Code
 
 - `Assets/OptimizedSpine/Runtime/SpineBenchmarkSpawner.cs`: 从 `SkeletonDataAsset` 生成 `SkeletonAnimation` 实例。

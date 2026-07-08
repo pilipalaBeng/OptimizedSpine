@@ -81,6 +81,13 @@ Build an Editor Window that inspects selected Spine prefab / asset and reports s
 - benchmark suitability
 - setting hints that are not auto-applied
 
+## Analyzer Milestone
+
+- Editor window: `OptimizedSpine/Spine Analyzer`
+- Analyzer service: `Assets/OptimizedSpine/Editor/Analysis/SpineAssetAnalyzer.cs`
+- First version is read-only and reports static hints only.
+- Runtime LOD remains a later milestone after benchmark measurements.
+
 ## Experiment Recording Rules
 
 - Add a file under `docs/experiments/` for each reproducible performance experiment.
