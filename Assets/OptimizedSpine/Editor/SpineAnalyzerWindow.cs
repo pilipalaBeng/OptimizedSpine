@@ -7,9 +7,12 @@ namespace OptimizedSpine.EditorTools
 {
     public sealed class SpineAnalyzerWindow : EditorWindow
     {
+        private const string LanguagePreferenceKey = "OptimizedSpine.SpineAnalyzer.Language";
+
         private Object target;
         private SpineAnalysisReport report;
         private Vector2 scroll;
+        private SpineAnalyzerLanguage language = SpineAnalyzerText.DefaultLanguage;
 
         [MenuItem("OptimizedSpine/Spine Analyzer")]
         public static void Open()
@@ -19,6 +22,8 @@ namespace OptimizedSpine.EditorTools
 
         private void OnEnable()
         {
+            language = SpineAnalyzerText.NormalizeLanguage(EditorPrefs.GetInt(LanguagePreferenceKey, (int)SpineAnalyzerText.DefaultLanguage));
+            UpdateWindowTitle();
             target = Selection.activeObject;
             AnalyzeSelection();
         }
@@ -32,29 +37,47 @@ namespace OptimizedSpine.EditorTools
 
         private void OnGUI()
         {
-            EditorGUILayout.LabelField("Spine Analyzer（Spine 分析器）", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField(T(SpineAnalyzerTextKey.WindowTitle), EditorStyles.boldLabel);
             EditorGUILayout.Space();
 
+            DrawLanguagePopup();
+
             EditorGUI.BeginChangeCheck();
-            target = EditorGUILayout.ObjectField("Target（目标）", target, typeof(Object), true);
+            target = EditorGUILayout.ObjectField(T(SpineAnalyzerTextKey.Target), target, typeof(Object), true);
             if (EditorGUI.EndChangeCheck())
                 AnalyzeSelection();
 
-            if (GUILayout.Button("Analyze Selection"))
+            if (GUILayout.Button(T(SpineAnalyzerTextKey.AnalyzeSelection)))
                 AnalyzeSelection();
 
             EditorGUILayout.Space();
 
             if (report == null)
             {
-                EditorGUILayout.HelpBox("Select a Spine asset or object to analyze.（请选择一个 Spine 资源或对象进行分析。）", MessageType.Info);
+                EditorGUILayout.HelpBox(T(SpineAnalyzerTextKey.EmptySelectionHelp), MessageType.Info);
                 return;
             }
 
             scroll = EditorGUILayout.BeginScrollView(scroll);
-            DrawSummary(report);
-            DrawFindings(report);
+            DrawSummary(report, language);
+            DrawFindings(report, language);
             EditorGUILayout.EndScrollView();
+        }
+
+        private void DrawLanguagePopup()
+        {
+            EditorGUI.BeginChangeCheck();
+            int selectedLanguage = EditorGUILayout.Popup(
+                T(SpineAnalyzerTextKey.Language),
+                (int)language,
+                SpineAnalyzerText.LanguageOptionNames);
+
+            if (!EditorGUI.EndChangeCheck())
+                return;
+
+            language = SpineAnalyzerText.NormalizeLanguage(selectedLanguage);
+            EditorPrefs.SetInt(LanguagePreferenceKey, (int)language);
+            UpdateWindowTitle();
         }
 
         private void AnalyzeSelection()
@@ -62,41 +85,65 @@ namespace OptimizedSpine.EditorTools
             report = SpineAssetAnalyzer.Analyze(target);
         }
 
-        private static void DrawSummary(SpineAnalysisReport report)
+        private void UpdateWindowTitle()
         {
-            EditorGUILayout.LabelField("Target（目标）", EditorStyles.boldLabel);
-            EditorGUILayout.LabelField("Name（名称）", report.TargetName);
-            EditorGUILayout.LabelField("Type（类型）", report.TargetKind);
-            EditorGUILayout.LabelField("Analyzed（已分析）", report.Analyzed ? "Yes（是）" : "No（否）");
+            titleContent = new GUIContent(T(SpineAnalyzerTextKey.WindowTitle));
+        }
+
+        private string T(SpineAnalyzerTextKey key)
+        {
+            return SpineAnalyzerText.Get(key, language);
+        }
+
+        private static string T(SpineAnalyzerTextKey key, SpineAnalyzerLanguage language)
+        {
+            return SpineAnalyzerText.Get(key, language);
+        }
+
+        private static void DrawSummary(SpineAnalysisReport report, SpineAnalyzerLanguage language)
+        {
+            EditorGUILayout.LabelField(T(SpineAnalyzerTextKey.Target, language), EditorStyles.boldLabel);
+            EditorGUILayout.LabelField(T(SpineAnalyzerTextKey.Name, language), report.TargetName);
+            EditorGUILayout.LabelField(T(SpineAnalyzerTextKey.Type, language), report.TargetKind);
+            EditorGUILayout.LabelField(
+                T(SpineAnalyzerTextKey.Analyzed, language),
+                report.Analyzed ? T(SpineAnalyzerTextKey.Yes, language) : T(SpineAnalyzerTextKey.No, language));
 
             EditorGUILayout.Space();
-            EditorGUILayout.LabelField("Static Metrics（静态指标）", EditorStyles.boldLabel);
-            EditorGUILayout.LabelField("Atlas Assets（图集资源）", report.AtlasAssetCount.ToString());
-            EditorGUILayout.LabelField("Materials（材质）", report.MaterialCount.ToString());
-            EditorGUILayout.LabelField("Slots（插槽）", report.SlotCount.ToString());
-            EditorGUILayout.LabelField("Skins（皮肤）", report.SkinCount.ToString());
-            EditorGUILayout.LabelField("Animations（动画）", report.AnimationCount.ToString());
-            EditorGUILayout.LabelField("Attachments（附件）", report.AttachmentCount.ToString());
+            EditorGUILayout.LabelField(T(SpineAnalyzerTextKey.StaticMetrics, language), EditorStyles.boldLabel);
+            EditorGUILayout.LabelField(T(SpineAnalyzerTextKey.AtlasAssets, language), report.AtlasAssetCount.ToString());
+            EditorGUILayout.LabelField(T(SpineAnalyzerTextKey.Materials, language), report.MaterialCount.ToString());
+            EditorGUILayout.LabelField(T(SpineAnalyzerTextKey.Slots, language), report.SlotCount.ToString());
+            EditorGUILayout.LabelField(T(SpineAnalyzerTextKey.Skins, language), report.SkinCount.ToString());
+            EditorGUILayout.LabelField(T(SpineAnalyzerTextKey.Animations, language), report.AnimationCount.ToString());
+            EditorGUILayout.LabelField(T(SpineAnalyzerTextKey.Attachments, language), report.AttachmentCount.ToString());
 
             if (!report.HasRendererSettings)
                 return;
 
             EditorGUILayout.Space();
-            EditorGUILayout.LabelField("Renderer Settings（渲染设置）", EditorStyles.boldLabel);
-            EditorGUILayout.LabelField("Use Single Submesh（单一子网格）", report.SingleSubmesh ? "On（开）" : "Off（关）");
-            EditorGUILayout.LabelField("Immutable Triangles（固定三角形）", report.ImmutableTriangles ? "On（开）" : "Off（关）");
-            EditorGUILayout.LabelField("Update When Invisible（不可见时更新）", report.UpdateWhenInvisible);
+            EditorGUILayout.LabelField(T(SpineAnalyzerTextKey.RendererSettings, language), EditorStyles.boldLabel);
+            EditorGUILayout.LabelField(
+                T(SpineAnalyzerTextKey.UseSingleSubmesh, language),
+                report.SingleSubmesh ? T(SpineAnalyzerTextKey.On, language) : T(SpineAnalyzerTextKey.Off, language));
+            EditorGUILayout.LabelField(
+                T(SpineAnalyzerTextKey.ImmutableTriangles, language),
+                report.ImmutableTriangles ? T(SpineAnalyzerTextKey.On, language) : T(SpineAnalyzerTextKey.Off, language));
+            EditorGUILayout.LabelField(T(SpineAnalyzerTextKey.UpdateWhenInvisible, language), report.UpdateWhenInvisible);
         }
 
-        private static void DrawFindings(SpineAnalysisReport report)
+        private static void DrawFindings(SpineAnalysisReport report, SpineAnalyzerLanguage language)
         {
             EditorGUILayout.Space();
-            EditorGUILayout.LabelField("Findings（分析结果）", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField(T(SpineAnalyzerTextKey.Findings, language), EditorStyles.boldLabel);
 
             foreach (SpineAnalysisFinding finding in report.Findings)
             {
                 MessageType messageType = ToMessageType(finding.Severity);
-                EditorGUILayout.HelpBox($"{finding.Title}\n\n{finding.Details}\n\nSuggestion（建议）: {finding.Suggestion}", messageType);
+                SpineAnalyzerFindingText findingText = SpineAnalyzerText.FormatFinding(finding, language);
+                EditorGUILayout.HelpBox(
+                    $"{findingText.Title}\n\n{findingText.Details}\n\n{T(SpineAnalyzerTextKey.Suggestion, language)}: {findingText.Suggestion}",
+                    messageType);
             }
         }
 

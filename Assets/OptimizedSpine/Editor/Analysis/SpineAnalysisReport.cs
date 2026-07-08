@@ -24,9 +24,9 @@ namespace OptimizedSpine.EditorTools.Analysis
         public IReadOnlyList<SpineAnalysisFinding> Findings => findings;
         public bool HasCriticalFindings => findings.Any(finding => finding.Severity == SpineAnalysisSeverity.Critical);
 
-        public void AddFinding(SpineAnalysisSeverity severity, string title, string details, string suggestion)
+        public void AddFinding(SpineAnalysisSeverity severity, SpineAnalysisFindingKey key, params object[] formatArguments)
         {
-            findings.Add(new SpineAnalysisFinding(severity, title, details, suggestion));
+            findings.Add(new SpineAnalysisFinding(severity, key, formatArguments));
             findings.Sort((left, right) => right.Severity.CompareTo(left.Severity));
         }
     }

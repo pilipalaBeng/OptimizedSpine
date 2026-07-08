@@ -93,9 +93,9 @@ namespace OptimizedSpine.Tests
         {
             SpineAnalysisReport report = new SpineAnalysisReport();
 
-            report.AddFinding(SpineAnalysisSeverity.Info, "Info", "Info details", "Info suggestion");
-            report.AddFinding(SpineAnalysisSeverity.Critical, "Critical", "Critical details", "Critical suggestion");
-            report.AddFinding(SpineAnalysisSeverity.Warning, "Warning", "Warning details", "Warning suggestion");
+            report.AddFinding(SpineAnalysisSeverity.Info, SpineAnalysisFindingKey.SingleMaterialPath);
+            report.AddFinding(SpineAnalysisSeverity.Critical, SpineAnalysisFindingKey.NoTargetSelected);
+            report.AddFinding(SpineAnalysisSeverity.Warning, SpineAnalysisFindingKey.MultipleMaterialsOrAtlasAssets);
 
             Assert.That(report.Findings[0].Severity, Is.EqualTo(SpineAnalysisSeverity.Critical));
             Assert.That(report.Findings[1].Severity, Is.EqualTo(SpineAnalysisSeverity.Warning));
@@ -103,7 +103,7 @@ namespace OptimizedSpine.Tests
         }
 
         [Test]
-        public void Analyze_SkeletonDataAsset_UsesBilingualOptimizationTerms()
+        public void Analyze_SkeletonDataAsset_AddsStableOptimizationFindingKeys()
         {
             SkeletonDataAsset asset = AssetDatabase.LoadAssetAtPath<SkeletonDataAsset>(DefaultSkeletonPath);
             Assert.That(asset, Is.Not.Null, $"Missing test SkeletonDataAsset at {DefaultSkeletonPath}");
@@ -111,11 +111,33 @@ namespace OptimizedSpine.Tests
             SpineAnalysisReport report = SpineAssetAnalyzer.Analyze(asset);
 
             Assert.That(report.Findings, Has.Some.Matches<SpineAnalysisFinding>(
-                finding => finding.Title.Contains("Use Single Submesh") && finding.Title.Contains("单一子网格")));
+                finding => finding.Key == SpineAnalysisFindingKey.UseSingleSubmesh));
             Assert.That(report.Findings, Has.Some.Matches<SpineAnalysisFinding>(
-                finding => finding.Title.Contains("Immutable Triangles") && finding.Title.Contains("固定三角形")));
+                finding => finding.Key == SpineAnalysisFindingKey.ImmutableTriangles));
             Assert.That(report.Findings, Has.Some.Matches<SpineAnalysisFinding>(
-                finding => finding.Title.Contains("Update When Invisible") && finding.Title.Contains("不可见时更新")));
+                finding => finding.Key == SpineAnalysisFindingKey.UpdateWhenInvisible));
+        }
+
+        [Test]
+        public void Text_DefaultLanguage_IsEnglishWithEnglishAndChineseOptions()
+        {
+            Assert.That(SpineAnalyzerText.DefaultLanguage, Is.EqualTo(SpineAnalyzerLanguage.English));
+            Assert.That(SpineAnalyzerText.LanguageOptionNames, Is.EqualTo(new[] { "English", "中文" }));
+        }
+
+        [Test]
+        public void Text_FormatFinding_UsesSelectedLanguage()
+        {
+            SpineAnalysisFinding finding = new SpineAnalysisFinding(
+                SpineAnalysisSeverity.Info,
+                SpineAnalysisFindingKey.UseSingleSubmesh);
+
+            SpineAnalyzerFindingText english = SpineAnalyzerText.FormatFinding(finding, SpineAnalyzerLanguage.English);
+            SpineAnalyzerFindingText chinese = SpineAnalyzerText.FormatFinding(finding, SpineAnalyzerLanguage.Chinese);
+
+            Assert.That(english.Title, Is.EqualTo("Use Single Submesh"));
+            Assert.That(chinese.Title, Is.EqualTo("单一子网格"));
+            Assert.That(chinese.Details, Does.Contain("Use Single Submesh"));
         }
     }
 }
