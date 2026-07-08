@@ -101,5 +101,21 @@ namespace OptimizedSpine.Tests
             Assert.That(report.Findings[1].Severity, Is.EqualTo(SpineAnalysisSeverity.Warning));
             Assert.That(report.Findings[2].Severity, Is.EqualTo(SpineAnalysisSeverity.Info));
         }
+
+        [Test]
+        public void Analyze_SkeletonDataAsset_UsesBilingualOptimizationTerms()
+        {
+            SkeletonDataAsset asset = AssetDatabase.LoadAssetAtPath<SkeletonDataAsset>(DefaultSkeletonPath);
+            Assert.That(asset, Is.Not.Null, $"Missing test SkeletonDataAsset at {DefaultSkeletonPath}");
+
+            SpineAnalysisReport report = SpineAssetAnalyzer.Analyze(asset);
+
+            Assert.That(report.Findings, Has.Some.Matches<SpineAnalysisFinding>(
+                finding => finding.Title.Contains("Use Single Submesh") && finding.Title.Contains("单一子网格")));
+            Assert.That(report.Findings, Has.Some.Matches<SpineAnalysisFinding>(
+                finding => finding.Title.Contains("Immutable Triangles") && finding.Title.Contains("固定三角形")));
+            Assert.That(report.Findings, Has.Some.Matches<SpineAnalysisFinding>(
+                finding => finding.Title.Contains("Update When Invisible") && finding.Title.Contains("不可见时更新")));
+        }
     }
 }

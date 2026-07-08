@@ -14,18 +14,18 @@ namespace OptimizedSpine.EditorTools.Analysis
         public static SpineAnalysisReport Analyze(Object target)
         {
             if (target == null)
-                return Critical("None", "Unsupported", "No target selected", "Select a SkeletonDataAsset or a GameObject with SkeletonAnimation.");
+                return Critical("None", "Unsupported", "No target selected（未选择目标）", "请选择 SkeletonDataAsset 或带 SkeletonAnimation 的 GameObject。");
 
             AnalysisTarget resolved = ResolveTarget(target);
             if (resolved.TargetKind == "Unsupported")
-                return Critical(target.name, resolved.TargetKind, "Unsupported target", "Select a SkeletonDataAsset, SkeletonAnimation, SkeletonRenderer, or compatible GameObject.");
+                return Critical(target.name, resolved.TargetKind, "Unsupported target（不支持的目标）", "请选择 SkeletonDataAsset、SkeletonAnimation、SkeletonRenderer，或包含这些组件的 GameObject。");
 
             if (resolved.SkeletonDataAsset == null)
-                return Critical(target.name, resolved.TargetKind, "Missing SkeletonDataAsset", "Assign a SkeletonDataAsset before analyzing this target.");
+                return Critical(target.name, resolved.TargetKind, "Missing SkeletonDataAsset（缺少骨骼数据资源）", "先给目标绑定 SkeletonDataAsset，再进行分析。");
 
             SkeletonData skeletonData = resolved.SkeletonDataAsset.GetSkeletonData(false);
             if (skeletonData == null)
-                return Critical(target.name, resolved.TargetKind, "SkeletonData is not loaded", "Reimport the Spine asset or check import errors in the Console.");
+                return Critical(target.name, resolved.TargetKind, "SkeletonData is not loaded（骨骼数据未加载）", "重新导入 Spine 资源，或检查 Console 里的导入错误。");
 
             SpineAnalysisReport report = new SpineAnalysisReport
             {
@@ -132,45 +132,45 @@ namespace OptimizedSpine.EditorTools.Analysis
             {
                 report.AddFinding(
                     SpineAnalysisSeverity.Warning,
-                    "Multiple materials or atlas assets",
-                    "This asset may require extra renderer submeshes or draw calls depending on draw order and blend mode usage.",
-                    "Measure it in the benchmark scene before treating it as batch-friendly.");
+                    "Multiple materials / atlas assets（多材质或多图集）",
+                    "这个资源可能因为 draw order（绘制顺序）或 blend mode（混合模式）产生额外 submesh / draw call。",
+                    "先放进 benchmark 场景测量，再判断它是否适合批处理。");
             }
             else
             {
                 report.AddFinding(
                     SpineAnalysisSeverity.Info,
-                    "Single material path",
-                    "The asset currently resolves to one material in static analysis.",
-                    "This is usually easier to batch, but still verify with the benchmark scene.");
+                    "Single material path（单材质路径）",
+                    "静态分析下这个资源目前只解析到一个 material（材质）。",
+                    "这通常更容易 batching（批处理），但仍要用 benchmark 场景验证。");
             }
 
             if (report.SlotCount >= HighSlotCount || report.AttachmentCount >= HighAttachmentCount)
             {
                 report.AddFinding(
                     SpineAnalysisSeverity.Info,
-                    "Complex skeleton",
-                    $"Slots: {report.SlotCount}, attachments: {report.AttachmentCount}.",
-                    "Use this asset in a 10/30/100 instance benchmark before making runtime optimization decisions.");
+                    "Complex skeleton（复杂骨骼）",
+                    $"Slots（插槽）: {report.SlotCount}, attachments（附件）: {report.AttachmentCount}.",
+                    "先用 10 / 30 / 100 实例 benchmark 测量，再决定 runtime optimization（运行时优化）策略。");
             }
 
             report.AddFinding(
                 SpineAnalysisSeverity.Info,
-                "Use Single Submesh",
-                "Can reduce submeshes for compatible assets, but can be wrong for assets relying on separated materials or special render behavior.",
-                "Treat it as an experiment toggle, not a default fix.");
+                "Use Single Submesh（单一子网格）",
+                "对兼容资源可能减少 submesh（子网格），但依赖分离材质或特殊渲染行为的资源可能不适合。",
+                "把它当作实验开关，不要当成默认优化。");
 
             report.AddFinding(
                 SpineAnalysisSeverity.Info,
-                "Immutable Triangles",
-                "Useful only when triangle topology stays stable for the active skin and animation set.",
-                "Enable only after checking that attachments and clipping do not change topology unexpectedly.");
+                "Immutable Triangles（固定三角形）",
+                "只有 active skin（当前皮肤）和 animation set（动画集合）的 triangle topology（三角形拓扑）稳定时才有意义。",
+                "确认 attachments（附件）和 clipping（裁剪）不会意外改变拓扑后再开启。");
 
             report.AddFinding(
                 SpineAnalysisSeverity.Info,
-                "Update When Invisible",
-                $"Current value: {report.UpdateWhenInvisible}.",
-                "Disable offscreen updates unless gameplay needs invisible characters to keep animating.");
+                "Update When Invisible（不可见时更新）",
+                $"Current value（当前值）: {report.UpdateWhenInvisible}.",
+                "除非 gameplay（玩法逻辑）要求离屏角色继续动画，否则可以考虑降低或关闭 offscreen update（离屏更新）。");
         }
 
         private static SpineAnalysisReport Critical(string targetName, string targetKind, string title, string suggestion)
@@ -182,7 +182,7 @@ namespace OptimizedSpine.EditorTools.Analysis
                 Analyzed = false
             };
 
-            report.AddFinding(SpineAnalysisSeverity.Critical, title, "The analyzer could not resolve Spine skeleton data from this selection.", suggestion);
+            report.AddFinding(SpineAnalysisSeverity.Critical, title, "Analyzer 无法从当前选择解析 Spine skeleton data（骨骼数据）。", suggestion);
             return report;
         }
 

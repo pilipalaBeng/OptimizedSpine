@@ -86,6 +86,7 @@ Build an Editor Window that inspects selected Spine prefab / asset and reports s
 - Editor window: `OptimizedSpine/Spine Analyzer`
 - Analyzer service: `Assets/OptimizedSpine/Editor/Analysis/SpineAssetAnalyzer.cs`
 - First version is read-only and reports static hints only.
+- Analyzer UI copy should use bilingual wording: Chinese explanation plus searchable English Spine / Unity terms.
 - Runtime LOD remains a later milestone after benchmark measurements.
 
 ## Experiment Recording Rules

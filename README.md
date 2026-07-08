@@ -30,6 +30,7 @@
 
 - `OptimizedSpine/Spine Analyzer`: opens a read-only Editor Window for selected Spine assets or objects.
 - The analyzer reports static metrics and candidate hints for material count, atlas count, slots, skins, animations, attachments, `Use Single Submesh`, `Immutable Triangles`, and `Update When Invisible`.
+- Analyzer labels and suggestions use bilingual wording: Chinese explanation plus the searchable English Spine / Unity term.
 - It does not auto-apply changes or claim measured runtime gains.
 
 ## Project Code
