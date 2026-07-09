@@ -133,6 +133,7 @@ GameObject:
   - component: {fileID: 561732584}
   - component: {fileID: 561732583}
   - component: {fileID: 561732582}
+  - component: {fileID: 561732585}
   m_Layer: 0
   m_Name: BenchmarkRunner
   m_TagString: Untagged
@@ -150,11 +151,30 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 784644fb86673e649970c71ed4b17188, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   spawner: {fileID: 561732583}
   smoothing: 0.1
   targetFrameRate: -1
+--- !u!114 &561732585
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 561732581}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e293ed36ab784589862dde6cbc737742, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  spawner: {fileID: 561732583}
+  experimentName: Baseline
+  skeletonAssetPath: Assets/Samples/spine-unity Runtime/4.3.95/Spine Examples/Spine Skeletons/spineboy-pro/spineboy-pro_SkeletonData.asset
+  spineUnityVersion: 4.3.95
+  warmupSeconds: 3
+  sampleSeconds: 10
+  outputDirectory: docs/experiments
 --- !u!114 &561732583
 MonoBehaviour:
   m_ObjectHideFlags: 0

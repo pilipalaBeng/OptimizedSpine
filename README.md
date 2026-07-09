@@ -25,6 +25,13 @@
 
 - `OptimizedSpine/Build Baseline Scene`: 重新生成 baseline 场景。
 - `OptimizedSpine/Validate Baseline Spawner`: 在编辑器中临时生成 3 个 Spine 实例并清理，用于快速验证 spawner 创建链路。
+- `OptimizedSpine/Write Benchmark Snapshot`: 将当前场景里的 benchmark 采样结果导出到 `docs/experiments/`。
+
+## Benchmark Snapshot
+
+- `BenchmarkRunner` 上的 `SpineBenchmarkSnapshotRecorder` 会在 Play Mode 中先 warmup，再采集一段固定时长的 frame/memory 数据。
+- 默认采样口径: warmup `3s`，sample window `10s`，输出目录 `docs/experiments/`。
+- 导出的 markdown 是 raw snapshot，只记录当前场景条件和基础指标；需要与另一份 snapshot 对比后，才能说某个设置带来了优化收益。
 
 ## Analyzer Tool
 
@@ -37,6 +44,8 @@
 
 - `Assets/OptimizedSpine/Runtime/SpineBenchmarkSpawner.cs`: 从 `SkeletonDataAsset` 生成 `SkeletonAnimation` 实例。
 - `Assets/OptimizedSpine/Runtime/SpineBenchmarkMetrics.cs`: 用大号红色文字显示 FPS、frame time、Mono memory、Total allocated memory、实例数。
+- `Assets/OptimizedSpine/Runtime/SpineBenchmarkSnapshot.cs`: benchmark snapshot 数据结构、frame accumulator 和 markdown formatter。
+- `Assets/OptimizedSpine/Runtime/SpineBenchmarkSnapshotRecorder.cs`: 运行时采样并导出 `docs/experiments/*.md`。
 - `Assets/OptimizedSpine/Runtime/SpineBenchmarkLayout.cs`: 网格布局 helper。
 - `Assets/OptimizedSpine/Editor/SpineBenchmarkSceneBuilder.cs`: baseline 场景生成和验证菜单。
 - `Assets/OptimizedSpine/Tests/EditMode/`: EditMode 测试草稿。

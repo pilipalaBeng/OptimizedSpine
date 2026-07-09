@@ -29,6 +29,8 @@ namespace OptimizedSpine.Benchmark
 
         public int SpawnedCount => spawned.Count;
         public int InstanceCount => instanceCount;
+        public string AnimationName => animationName;
+        public SkeletonDataAsset SkeletonDataAsset => skeletonDataAsset;
 
         private void Start()
         {

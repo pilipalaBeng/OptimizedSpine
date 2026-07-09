@@ -71,6 +71,23 @@ namespace OptimizedSpine.EditorTools
             }
         }
 
+        [MenuItem("OptimizedSpine/Write Benchmark Snapshot")]
+        public static void WriteBenchmarkSnapshot()
+        {
+            SpineBenchmarkSnapshotRecorder recorder = UnityEngine.Object.FindObjectOfType<SpineBenchmarkSnapshotRecorder>();
+            if (recorder == null)
+            {
+                Debug.LogWarning("No SpineBenchmarkSnapshotRecorder found in the active scene.");
+                return;
+            }
+
+            if (!EditorApplication.isPlaying)
+                Debug.LogWarning("Writing a snapshot outside Play Mode will usually produce an empty or partial sample.", recorder);
+
+            recorder.WriteSnapshot();
+            AssetDatabase.Refresh();
+        }
+
         private static void CreateCamera()
         {
             GameObject cameraObject = new GameObject("Main Camera");
@@ -91,12 +108,23 @@ namespace OptimizedSpine.EditorTools
             GameObject runner = new GameObject("BenchmarkRunner");
             SpineBenchmarkSpawner spawner = runner.AddComponent<SpineBenchmarkSpawner>();
             SpineBenchmarkMetrics metrics = runner.AddComponent<SpineBenchmarkMetrics>();
+            SpineBenchmarkSnapshotRecorder recorder = runner.AddComponent<SpineBenchmarkSnapshotRecorder>();
 
             SerializedObject metricsObject = new SerializedObject(metrics);
             metricsObject.FindProperty("spawner").objectReferenceValue = spawner;
             metricsObject.FindProperty("smoothing").floatValue = 0.1f;
             metricsObject.FindProperty("targetFrameRate").intValue = -1;
             metricsObject.ApplyModifiedPropertiesWithoutUndo();
+
+            SerializedObject recorderObject = new SerializedObject(recorder);
+            recorderObject.FindProperty("spawner").objectReferenceValue = spawner;
+            recorderObject.FindProperty("experimentName").stringValue = "Baseline";
+            recorderObject.FindProperty("skeletonAssetPath").stringValue = DefaultSkeletonPath;
+            recorderObject.FindProperty("spineUnityVersion").stringValue = "4.3.95";
+            recorderObject.FindProperty("warmupSeconds").floatValue = 3f;
+            recorderObject.FindProperty("sampleSeconds").floatValue = 10f;
+            recorderObject.FindProperty("outputDirectory").stringValue = "docs/experiments";
+            recorderObject.ApplyModifiedPropertiesWithoutUndo();
 
             return spawner;
         }

@@ -39,14 +39,18 @@
 - Default animation: `run`
 - Default instance count: `25`
 - Metrics overlay: Game view top-left, large red text.
+- Snapshot recorder: `BenchmarkRunner` includes `SpineBenchmarkSnapshotRecorder`, default warmup `3s`, sample window `10s`, output `docs/experiments/`.
 - Main runtime scripts:
   - `Assets/OptimizedSpine/Runtime/SpineBenchmarkSpawner.cs`
   - `Assets/OptimizedSpine/Runtime/SpineBenchmarkMetrics.cs`
   - `Assets/OptimizedSpine/Runtime/SpineBenchmarkLayout.cs`
+  - `Assets/OptimizedSpine/Runtime/SpineBenchmarkSnapshot.cs`
+  - `Assets/OptimizedSpine/Runtime/SpineBenchmarkSnapshotRecorder.cs`
 - Editor helper:
   - `Assets/OptimizedSpine/Editor/SpineBenchmarkSceneBuilder.cs`
   - Menu: `OptimizedSpine/Build Baseline Scene`
   - Menu: `OptimizedSpine/Validate Baseline Spawner`
+  - Menu: `OptimizedSpine/Write Benchmark Snapshot`
 
 ## Spine 4.3 Runtime Note
 
@@ -93,6 +97,8 @@ Build an Editor Window that inspects selected Spine prefab / asset and reports s
 
 - Add a file under `docs/experiments/` for each reproducible performance experiment.
 - Each record should include Unity version, spine-unity version, scene, asset source, variables, measurement method, and conclusion.
+- Use `OptimizedSpine/Write Benchmark Snapshot` after Play Mode sampling to export raw benchmark records.
+- Treat generated snapshots as raw measurements. Compare snapshots before claiming an optimization gain.
 - Without measurement data, write only assumptions or observations. Do not present them as verified optimization conclusions.
 
 ## Update Rules
