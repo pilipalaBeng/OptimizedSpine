@@ -32,6 +32,7 @@
 - `BenchmarkRunner` 上的 `SpineBenchmarkSnapshotRecorder` 会在 Play Mode 中先 warmup，再采集一段固定时长的 frame/memory 数据。
 - 默认采样口径: warmup `3s`，sample window `10s`，输出目录 `docs/experiments/`。
 - 导出的 markdown 是 raw snapshot，只记录当前场景条件和基础指标；需要与另一份 snapshot 对比后，才能说某个设置带来了优化收益。
+- Benchmark runtime 组件的 Inspector 字段使用中文显示名和中文 Tooltip，方便直接调实例数、布局和采样窗口。
 
 ## Analyzer Tool
 

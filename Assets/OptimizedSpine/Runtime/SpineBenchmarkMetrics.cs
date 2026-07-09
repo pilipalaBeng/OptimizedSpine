@@ -6,9 +6,16 @@ namespace OptimizedSpine.Benchmark
 {
     public sealed class SpineBenchmarkMetrics : MonoBehaviour
     {
-        [SerializeField] private SpineBenchmarkSpawner spawner;
-        [SerializeField, Min(0.01f)] private float smoothing = 0.1f;
-        [SerializeField] private int targetFrameRate = -1;
+        [Header("显示来源")]
+        [SerializeField, InspectorName("生成器"), Tooltip("读取实例数量的 Spine benchmark 生成器。")]
+        private SpineBenchmarkSpawner spawner;
+
+        [Header("显示设置")]
+        [SerializeField, InspectorName("平滑系数"), Min(0.01f), Tooltip("FPS 和 frame time 的平滑速度，数值越大越贴近瞬时变化。")]
+        private float smoothing = 0.1f;
+
+        [SerializeField, InspectorName("目标帧率"), Tooltip("运行时设置 Application.targetFrameRate；-1 表示使用平台默认值。")]
+        private int targetFrameRate = -1;
 
         private readonly StringBuilder textBuilder = new StringBuilder(256);
         private float smoothedDeltaTime;

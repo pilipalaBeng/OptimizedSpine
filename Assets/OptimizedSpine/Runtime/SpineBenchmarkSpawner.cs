@@ -11,15 +11,35 @@ namespace OptimizedSpine.Benchmark
 {
     public sealed class SpineBenchmarkSpawner : MonoBehaviour
     {
-        [SerializeField] private SkeletonDataAsset skeletonDataAsset;
-        [SerializeField, SpineAnimation(dataField: "skeletonDataAsset")] private string animationName = "run";
-        [SerializeField, Min(0)] private int instanceCount = 25;
-        [SerializeField, Min(1)] private int columns = 5;
-        [SerializeField] private Vector2 spacing = new Vector2(2.2f, 2.2f);
-        [SerializeField] private Vector3 origin = new Vector3(-4.4f, 2.2f, 0f);
-        [SerializeField] private bool rebuildOnStart = true;
-        [SerializeField] private bool playAnimation = true;
-        [SerializeField] private bool randomizeStartTime = true;
+        [Header("Spine 资源")]
+        [SerializeField, InspectorName("Skeleton 数据资源"), Tooltip("用于生成 benchmark 实例的 SkeletonDataAsset。")]
+        private SkeletonDataAsset skeletonDataAsset;
+
+        [SerializeField, InspectorName("动画名称"), SpineAnimation(dataField: "skeletonDataAsset"), Tooltip("每个实例默认播放的 Spine 动画。")]
+        private string animationName = "run";
+
+        [Header("生成布局")]
+        [SerializeField, InspectorName("生成数量"), Min(0), Tooltip("要生成的 Spine 实例数量。")]
+        private int instanceCount = 25;
+
+        [SerializeField, InspectorName("每行数量"), Min(1), Tooltip("网格布局中每一行放多少个实例。")]
+        private int columns = 5;
+
+        [SerializeField, InspectorName("间距"), Tooltip("相邻实例之间的水平和垂直间距。")]
+        private Vector2 spacing = new Vector2(2.2f, 2.2f);
+
+        [SerializeField, InspectorName("起始位置"), Tooltip("第一个实例在本地坐标中的起始位置。")]
+        private Vector3 origin = new Vector3(-4.4f, 2.2f, 0f);
+
+        [Header("播放行为")]
+        [SerializeField, InspectorName("开始时重建"), Tooltip("进入 Play Mode 时是否自动清理并重新生成实例。")]
+        private bool rebuildOnStart = true;
+
+        [SerializeField, InspectorName("播放动画"), Tooltip("生成实例后是否立即播放指定动画。")]
+        private bool playAnimation = true;
+
+        [SerializeField, InspectorName("随机起始时间"), Tooltip("让每个实例从不同动画时间点开始，避免所有动画完全同步。")]
+        private bool randomizeStartTime = true;
 
         private readonly List<GameObject> spawned = new List<GameObject>();
 #if UNITY_EDITOR

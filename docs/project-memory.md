@@ -40,6 +40,7 @@
 - Default instance count: `25`
 - Metrics overlay: Game view top-left, large red text.
 - Snapshot recorder: `BenchmarkRunner` includes `SpineBenchmarkSnapshotRecorder`, default warmup `3s`, sample window `10s`, output `docs/experiments/`.
+- Benchmark runtime component Inspector fields use Chinese `InspectorName` labels and Chinese `Tooltip` text while keeping serialized field names stable.
 - Main runtime scripts:
   - `Assets/OptimizedSpine/Runtime/SpineBenchmarkSpawner.cs`
   - `Assets/OptimizedSpine/Runtime/SpineBenchmarkMetrics.cs`

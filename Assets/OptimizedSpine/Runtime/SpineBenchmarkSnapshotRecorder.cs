@@ -8,13 +8,30 @@ namespace OptimizedSpine.Benchmark
 {
     public sealed class SpineBenchmarkSnapshotRecorder : MonoBehaviour
     {
-        [SerializeField] private SpineBenchmarkSpawner spawner;
-        [SerializeField] private string experimentName = "Baseline";
-        [SerializeField] private string skeletonAssetPath = string.Empty;
-        [SerializeField] private string spineUnityVersion = "4.3.95";
-        [SerializeField, Min(0f)] private float warmupSeconds = 3f;
-        [SerializeField, Min(0.01f)] private float sampleSeconds = 10f;
-        [SerializeField] private string outputDirectory = "docs/experiments";
+        [Header("采样对象")]
+        [SerializeField, InspectorName("生成器"), Tooltip("读取实例数量、动画名和 Skeleton 数据的 benchmark 生成器。")]
+        private SpineBenchmarkSpawner spawner;
+
+        [Header("实验信息")]
+        [SerializeField, InspectorName("实验名称"), Tooltip("写入 markdown 标题和文件名的实验名称。")]
+        private string experimentName = "Baseline";
+
+        [SerializeField, InspectorName("Skeleton 资源路径"), Tooltip("写入 snapshot 的 Skeleton 资源路径，用于保证实验记录可复现。")]
+        private string skeletonAssetPath = string.Empty;
+
+        [SerializeField, InspectorName("spine-unity 版本"), Tooltip("写入 snapshot 的 spine-unity 版本。")]
+        private string spineUnityVersion = "4.3.95";
+
+        [Header("采样窗口")]
+        [SerializeField, InspectorName("预热秒数"), Min(0f), Tooltip("正式采样前等待的秒数，用来避开刚进入 Play Mode 的波动。")]
+        private float warmupSeconds = 3f;
+
+        [SerializeField, InspectorName("采样秒数"), Min(0.01f), Tooltip("正式记录 frame/memory 数据的持续时间。")]
+        private float sampleSeconds = 10f;
+
+        [Header("输出")]
+        [SerializeField, InspectorName("输出目录"), Tooltip("相对于项目根目录的 markdown 输出目录。")]
+        private string outputDirectory = "docs/experiments";
 
         private SpineBenchmarkFrameAccumulator accumulator;
 
