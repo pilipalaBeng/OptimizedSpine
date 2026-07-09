@@ -51,6 +51,7 @@
   - `Assets/OptimizedSpine/Editor/SpineBenchmarkSceneBuilder.cs`
   - Menu: `OptimizedSpine/Build Baseline Scene`
   - Menu: `OptimizedSpine/Validate Baseline Spawner`
+  - Menu: `OptimizedSpine/Benchmark Presets`
   - Menu: `OptimizedSpine/Write Benchmark Snapshot`
   - Menu: `OptimizedSpine/Compare Benchmark Snapshots`
 
@@ -99,6 +100,7 @@ Build an Editor Window that inspects selected Spine prefab / asset and reports s
 
 - Add a file under `docs/experiments/` for each reproducible performance experiment.
 - Each record should include Unity version, spine-unity version, scene, asset source, variables, measurement method, and conclusion.
+- Use `OptimizedSpine/Benchmark Presets` before sampling to keep instance count and experiment name aligned.
 - Use `OptimizedSpine/Write Benchmark Snapshot` after Play Mode sampling to export raw benchmark records.
 - Use `OptimizedSpine/Compare Benchmark Snapshots` to compare two generated snapshots and catch context mismatches before interpreting results.
 - Treat generated snapshots as raw measurements. Compare snapshots before claiming an optimization gain.

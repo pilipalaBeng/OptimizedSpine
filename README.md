@@ -25,6 +25,7 @@
 
 - `OptimizedSpine/Build Baseline Scene`: 重新生成 baseline 场景。
 - `OptimizedSpine/Validate Baseline Spawner`: 在编辑器中临时生成 3 个 Spine 实例并清理，用于快速验证 spawner 创建链路。
+- `OptimizedSpine/Benchmark Presets`: 一键设置 `10 / 25 / 50 / 100` 实例，并同步 snapshot 实验名称。
 - `OptimizedSpine/Write Benchmark Snapshot`: 将当前场景里的 benchmark 采样结果导出到 `docs/experiments/`。
 - `OptimizedSpine/Compare Benchmark Snapshots`: 选择两份 snapshot markdown，对比 FPS、frame time 和 memory 差异。
 
@@ -34,6 +35,7 @@
 - 默认采样口径: warmup `3s`，sample window `10s`，输出目录 `docs/experiments/`。
 - 导出的 markdown 是 raw snapshot，只记录当前场景条件和基础指标；需要与另一份 snapshot 对比后，才能说某个设置带来了优化收益。
 - Benchmark runtime 组件的 Inspector 字段使用中文显示名和中文 Tooltip，方便直接调实例数、布局和采样窗口。
+- `Benchmark Presets` 用来固定测量条件，避免一次跑 `25` 实例、下一次误跑成 `20` 实例。
 - `Compare Benchmark Snapshots` 会提示关键上下文是否一致，例如 `Instance Count`、场景、Skeleton、动画、Unity / spine-unity 版本。
 
 ## Analyzer Tool
@@ -51,6 +53,7 @@
 - `Assets/OptimizedSpine/Runtime/SpineBenchmarkSnapshotRecorder.cs`: 运行时采样并导出 `docs/experiments/*.md`。
 - `Assets/OptimizedSpine/Runtime/SpineBenchmarkLayout.cs`: 网格布局 helper。
 - `Assets/OptimizedSpine/Editor/Benchmarking/`: snapshot markdown 解析和指标对比逻辑。
+- `Assets/OptimizedSpine/Editor/SpineBenchmarkPresetWindow.cs`: benchmark 实例数预设窗口。
 - `Assets/OptimizedSpine/Editor/SpineBenchmarkSnapshotCompareWindow.cs`: snapshot 对比窗口。
 - `Assets/OptimizedSpine/Editor/SpineBenchmarkSceneBuilder.cs`: baseline 场景生成和验证菜单。
 - `Assets/OptimizedSpine/Tests/EditMode/`: EditMode 测试草稿。
