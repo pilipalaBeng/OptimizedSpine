@@ -8,7 +8,7 @@ Recommended filename:
 YYYY-MM-DD-short-topic.md
 ```
 
-Generated snapshots from `OptimizedSpine/Write Benchmark Snapshot` also land in this folder. Those files are raw measurements: keep them, compare them against another snapshot, and only then write an explicit conclusion.
+Generated snapshots from `OptimizedSpine/Write Benchmark Snapshot` also land in this folder. Those files are raw measurements: keep them, compare them against another snapshot with `OptimizedSpine/Compare Benchmark Snapshots`, and only then write an explicit conclusion.
 
 ## Template
 
