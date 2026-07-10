@@ -10,6 +10,12 @@ namespace OptimizedSpine.Benchmark
         Complete
     }
 
+    public enum SpineBenchmarkUpdateMode
+    {
+        Baseline,
+        CentralizedUpdate
+    }
+
     public sealed class SpineBenchmarkSnapshot
     {
         public string ExperimentName { get; set; } = "Spine Benchmark Snapshot";
@@ -20,6 +26,7 @@ namespace OptimizedSpine.Benchmark
         public string SkeletonAssetPath { get; set; } = string.Empty;
         public string AnimationName { get; set; } = string.Empty;
         public int InstanceCount { get; set; }
+        public string UpdateMode { get; set; } = string.Empty;
         public float WarmupSeconds { get; set; }
         public float TargetSampleSeconds { get; set; }
         public float SampleSeconds { get; set; }
@@ -183,6 +190,7 @@ namespace OptimizedSpine.Benchmark
             AppendRow(builder, "Skeleton Asset", snapshot.SkeletonAssetPath);
             AppendRow(builder, "Animation", snapshot.AnimationName);
             AppendRow(builder, "Instance Count", snapshot.InstanceCount.ToString(CultureInfo.InvariantCulture));
+            AppendRow(builder, "Update Mode", snapshot.UpdateMode);
             AppendRow(builder, "Warmup", FormatSeconds(snapshot.WarmupSeconds));
             AppendRow(builder, "Target Sample Window", FormatSeconds(snapshot.TargetSampleSeconds));
             AppendRow(builder, "Actual Sample Window", FormatSeconds(snapshot.SampleSeconds));

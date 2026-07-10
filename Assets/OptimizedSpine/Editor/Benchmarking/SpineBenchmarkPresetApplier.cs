@@ -13,6 +13,16 @@ namespace OptimizedSpine.EditorTools.Benchmarking
             SpineBenchmarkPreset preset,
             bool rebuildInstances)
         {
+            Apply(spawner, recorder, preset, SpineBenchmarkUpdateMode.Baseline, rebuildInstances);
+        }
+
+        public static void Apply(
+            SpineBenchmarkSpawner spawner,
+            SpineBenchmarkSnapshotRecorder recorder,
+            SpineBenchmarkPreset preset,
+            SpineBenchmarkUpdateMode updateMode,
+            bool rebuildInstances)
+        {
             if (spawner == null)
                 throw new ArgumentNullException(nameof(spawner));
 
@@ -20,6 +30,7 @@ namespace OptimizedSpine.EditorTools.Benchmarking
             SerializedObject spawnerObject = new SerializedObject(spawner);
             spawnerObject.FindProperty("instanceCount").intValue = preset.InstanceCount;
             spawnerObject.FindProperty("columns").intValue = preset.Columns;
+            spawnerObject.FindProperty("updateMode").enumValueIndex = (int)updateMode;
             spawnerObject.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(spawner);
 
@@ -28,7 +39,7 @@ namespace OptimizedSpine.EditorTools.Benchmarking
                 Undo.RecordObject(recorder, "Apply Spine Benchmark Preset");
                 SerializedObject recorderObject = new SerializedObject(recorder);
                 recorderObject.FindProperty("spawner").objectReferenceValue = spawner;
-                recorderObject.FindProperty("experimentName").stringValue = preset.ExperimentName;
+                recorderObject.FindProperty("experimentName").stringValue = FormatExperimentName(preset, updateMode);
                 recorderObject.ApplyModifiedPropertiesWithoutUndo();
                 recorder.ResetSampling();
                 EditorUtility.SetDirty(recorder);
@@ -36,6 +47,13 @@ namespace OptimizedSpine.EditorTools.Benchmarking
 
             if (rebuildInstances)
                 spawner.Rebuild();
+        }
+
+        public static string FormatExperimentName(SpineBenchmarkPreset preset, SpineBenchmarkUpdateMode updateMode)
+        {
+            return updateMode == SpineBenchmarkUpdateMode.Baseline
+                ? preset.ExperimentName
+                : updateMode + "_" + preset.InstanceCount;
         }
     }
 }

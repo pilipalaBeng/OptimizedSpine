@@ -38,6 +38,7 @@ namespace OptimizedSpine.EditorTools.Benchmarking
             record.AnimationName = Get(fields, "Animation");
             record.Status = Get(fields, "Status");
             record.InstanceCount = ParseInt(Get(fields, "Instance Count"));
+            record.UpdateMode = FirstNonEmpty(Get(fields, "Update Mode"), "Unknown");
             record.WarmupSeconds = ParseDouble(Get(fields, "Warmup"));
             record.TargetSampleSeconds = ParseDouble(FirstNonEmpty(
                 Get(fields, "Target Sample Window"),

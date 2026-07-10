@@ -127,6 +127,7 @@ namespace OptimizedSpine.Benchmark
                 SkeletonAssetPath = ResolveSkeletonAssetPath(),
                 AnimationName = spawner != null ? spawner.AnimationName : string.Empty,
                 InstanceCount = spawner != null ? spawner.InstanceCount : 0,
+                UpdateMode = spawner != null ? spawner.UpdateModeLabel : string.Empty,
                 WarmupSeconds = summary.WarmupSeconds,
                 TargetSampleSeconds = summary.TargetSampleSeconds,
                 SampleSeconds = summary.SampleSeconds,

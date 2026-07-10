@@ -11,6 +11,7 @@ namespace OptimizedSpine.EditorTools
         private SpineBenchmarkSpawner spawner;
         private SpineBenchmarkSnapshotRecorder recorder;
         private bool rebuildInstances = true;
+        private SpineBenchmarkUpdateMode updateMode = SpineBenchmarkUpdateMode.Baseline;
         private string lastMessage = string.Empty;
 
         [MenuItem("OptimizedSpine/Benchmark Presets")]
@@ -37,6 +38,7 @@ namespace OptimizedSpine.EditorTools
                 lastMessage = string.Empty;
 
             rebuildInstances = EditorGUILayout.ToggleLeft("应用后重建当前实例", rebuildInstances);
+            updateMode = (SpineBenchmarkUpdateMode)EditorGUILayout.EnumPopup("Spine 更新模式", updateMode);
 
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button("查找场景对象"))
@@ -50,7 +52,8 @@ namespace OptimizedSpine.EditorTools
 
             foreach (SpineBenchmarkPreset preset in SpineBenchmarkPresetCatalog.DefaultPresets)
             {
-                if (GUILayout.Button($"{preset.ExperimentName}  ({preset.InstanceCount} instances / {preset.Columns} columns)"))
+                string experimentName = SpineBenchmarkPresetApplier.FormatExperimentName(preset, updateMode);
+                if (GUILayout.Button($"{experimentName}  ({preset.InstanceCount} instances / {preset.Columns} columns)"))
                     ApplyPreset(preset);
             }
 
@@ -78,12 +81,12 @@ namespace OptimizedSpine.EditorTools
                 return;
             }
 
-            SpineBenchmarkPresetApplier.Apply(spawner, recorder, preset, rebuildInstances);
+            SpineBenchmarkPresetApplier.Apply(spawner, recorder, preset, updateMode, rebuildInstances);
 
             if (!Application.isPlaying)
                 EditorSceneManager.MarkSceneDirty(spawner.gameObject.scene);
 
-            lastMessage = $"已应用 {preset.ExperimentName}。下一次 Write Benchmark Snapshot 会使用这个实验名称。";
+            lastMessage = $"已应用 {SpineBenchmarkPresetApplier.FormatExperimentName(preset, updateMode)}。下一次 Write Benchmark Snapshot 会使用这个实验名称。";
         }
     }
 }

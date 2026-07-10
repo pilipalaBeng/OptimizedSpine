@@ -40,6 +40,8 @@
 - Benchmark runtime 组件的 Inspector 字段使用中文显示名和中文 Tooltip，方便直接调实例数、布局和采样窗口。
 - `Benchmark Presets` 用来固定测量条件，避免一次跑 `25` 实例、下一次误跑成 `20` 实例。
 - `Compare Benchmark Snapshots` 会提示关键上下文是否一致，例如 `Instance Count`、场景、Skeleton、动画、Unity / spine-unity 版本、采样窗口。
+- `Benchmark Presets` 里可以选择 `Baseline` 或 `CentralizedUpdate`。`Baseline` 保持 spine-unity 每个 `SkeletonAnimation` 自己更新；`CentralizedUpdate` 会禁用单体 `SkeletonAnimation` 更新并由 `SpineBenchmarkSpawner` 统一调用 `Update` / `LateUpdate`，用于验证统一更新是否真的有收益。
+- Snapshot 会记录 `Update Mode`，对比工具也会在模式不一致时提示。
 
 ## Analyzer Tool
 
@@ -51,7 +53,7 @@
 ## Project Code
 
 - `Assets/OptimizedSpine/Runtime/SpineBenchmarkSpawner.cs`: 从 `SkeletonDataAsset` 生成 `SkeletonAnimation` 实例。
-- `Assets/OptimizedSpine/Runtime/SpineBenchmarkMetrics.cs`: 用大号红色文字显示 FPS、frame time、Mono memory、Total allocated memory、实例数。
+- `Assets/OptimizedSpine/Runtime/SpineBenchmarkMetrics.cs`: 用大号红色文字显示 FPS、frame time、Mono memory、Total allocated memory、实例数和 update mode。
 - `Assets/OptimizedSpine/Runtime/SpineBenchmarkSnapshot.cs`: benchmark snapshot 数据结构、frame accumulator 和 markdown formatter。
 - `Assets/OptimizedSpine/Runtime/SpineBenchmarkSnapshotRecorder.cs`: 运行时采样并导出 `docs/experiments/*.md`。
 - `Assets/OptimizedSpine/Runtime/SpineBenchmarkLayout.cs`: 网格布局 helper。

@@ -22,6 +22,7 @@ namespace OptimizedSpine.Tests
             Assert.That(record.ScenePath, Is.EqualTo("Assets/OptimizedSpine/Scenes/Benchmark_01_Baseline.unity"));
             Assert.That(record.AnimationName, Is.EqualTo("run"));
             Assert.That(record.InstanceCount, Is.EqualTo(25));
+            Assert.That(record.UpdateMode, Is.EqualTo("Baseline"));
             Assert.That(record.WarmupSeconds, Is.EqualTo(3d).Within(0.001));
             Assert.That(record.TargetSampleSeconds, Is.EqualTo(10d).Within(0.001));
             Assert.That(record.ActualSampleSeconds, Is.EqualTo(10d).Within(0.001));
@@ -98,6 +99,26 @@ namespace OptimizedSpine.Tests
             Assert.That(comparison.ContextWarnings, Has.Some.Contains("Candidate actual sample window is shorter than target"));
         }
 
+        [Test]
+        public void Compare_WarnsWhenUpdateModeDiffers()
+        {
+            SpineBenchmarkSnapshotRecord baseline = SpineBenchmarkSnapshotParser.Parse(SampleSnapshotWithWindows(
+                targetSampleWindow: "10 s",
+                actualSampleWindow: "10 s",
+                status: "Complete",
+                updateMode: "Baseline"));
+
+            SpineBenchmarkSnapshotRecord candidate = SpineBenchmarkSnapshotParser.Parse(SampleSnapshotWithWindows(
+                targetSampleWindow: "10 s",
+                actualSampleWindow: "10 s",
+                status: "Complete",
+                updateMode: "CentralizedUpdate"));
+
+            SpineBenchmarkSnapshotComparison comparison = SpineBenchmarkSnapshotComparer.Compare(baseline, candidate);
+
+            Assert.That(comparison.ContextWarnings, Has.Some.Contains("Update Mode"));
+        }
+
         private static string SampleSnapshot(
             int instanceCount,
             double averageFps,
@@ -119,6 +140,7 @@ namespace OptimizedSpine.Tests
 | Skeleton Asset | `Assets/Samples/spineboy-pro_SkeletonData.asset` |
 | Animation | `run` |
 | Instance Count | `{instanceCount}` |
+| Update Mode | `Baseline` |
 | Warmup | `3 s` |
 | Sample Window | `10 s` |
 | Status | `Complete` |
@@ -143,7 +165,8 @@ Raw snapshot only. Compare against another snapshot before claiming an optimizat
         private static string SampleSnapshotWithWindows(
             string targetSampleWindow,
             string actualSampleWindow,
-            string status)
+            string status,
+            string updateMode = "Baseline")
         {
             return $@"# Baseline_25
 
@@ -158,6 +181,7 @@ Raw snapshot only. Compare against another snapshot before claiming an optimizat
 | Skeleton Asset | `Assets/Samples/spineboy-pro_SkeletonData.asset` |
 | Animation | `run` |
 | Instance Count | `25` |
+| Update Mode | `{updateMode}` |
 | Warmup | `3 s` |
 | Target Sample Window | `{targetSampleWindow}` |
 | Actual Sample Window | `{actualSampleWindow}` |

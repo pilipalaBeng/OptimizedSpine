@@ -156,6 +156,7 @@ namespace OptimizedSpine.EditorTools
             spawnerObject.FindProperty("rebuildOnStart").boolValue = true;
             spawnerObject.FindProperty("playAnimation").boolValue = true;
             spawnerObject.FindProperty("randomizeStartTime").boolValue = true;
+            spawnerObject.FindProperty("updateMode").enumValueIndex = (int)SpineBenchmarkUpdateMode.Baseline;
             spawnerObject.ApplyModifiedPropertiesWithoutUndo();
         }
     }

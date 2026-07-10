@@ -41,7 +41,11 @@ namespace OptimizedSpine.Benchmark
         [SerializeField, InspectorName("随机起始时间"), Tooltip("让每个实例从不同动画时间点开始，避免所有动画完全同步。")]
         private bool randomizeStartTime = true;
 
+        [SerializeField, InspectorName("Spine 更新模式"), Tooltip("Baseline 使用每个 SkeletonAnimation 自己的 Update；CentralizedUpdate 禁用单体 Update 并由本生成器统一调度。")]
+        private SpineBenchmarkUpdateMode updateMode = SpineBenchmarkUpdateMode.Baseline;
+
         private readonly List<GameObject> spawned = new List<GameObject>();
+        private readonly List<SkeletonAnimation> spawnedSkeletons = new List<SkeletonAnimation>();
 #if UNITY_EDITOR
         private static readonly FieldInfo WasDeprecatedTransferredField =
             typeof(SkeletonAnimation).GetField("wasDeprecatedTransferred", BindingFlags.Instance | BindingFlags.NonPublic);
@@ -51,11 +55,48 @@ namespace OptimizedSpine.Benchmark
         public int InstanceCount => instanceCount;
         public string AnimationName => animationName;
         public SkeletonDataAsset SkeletonDataAsset => skeletonDataAsset;
+        public SpineBenchmarkUpdateMode UpdateMode => updateMode;
+        public string UpdateModeLabel => updateMode.ToString();
+        public int CentralizedUpdateTargetCount => updateMode == SpineBenchmarkUpdateMode.CentralizedUpdate ? spawnedSkeletons.Count : 0;
 
         private void Start()
         {
             if (rebuildOnStart)
                 Rebuild();
+        }
+
+        private void Update()
+        {
+            if (updateMode != SpineBenchmarkUpdateMode.CentralizedUpdate)
+                return;
+
+            float deltaSeconds = Time.deltaTime;
+            for (int index = 0; index < spawnedSkeletons.Count; index++)
+            {
+                SkeletonAnimation skeletonAnimation = spawnedSkeletons[index];
+                if (skeletonAnimation == null)
+                    continue;
+
+                if (skeletonAnimation.enabled)
+                    skeletonAnimation.enabled = false;
+
+                skeletonAnimation.Update(deltaSeconds);
+            }
+        }
+
+        private void LateUpdate()
+        {
+            if (updateMode != SpineBenchmarkUpdateMode.CentralizedUpdate)
+                return;
+
+            for (int index = 0; index < spawnedSkeletons.Count; index++)
+            {
+                SkeletonAnimation skeletonAnimation = spawnedSkeletons[index];
+                if (skeletonAnimation == null || skeletonAnimation.Renderer == null)
+                    continue;
+
+                skeletonAnimation.Renderer.LateUpdate();
+            }
         }
 
         private void OnDestroy()
@@ -90,7 +131,9 @@ namespace OptimizedSpine.Benchmark
                 if (playAnimation && animation != null)
                     Play(skeletonAnimation, animation, index);
 
+                ApplyUpdateMode(skeletonAnimation);
                 spawned.Add(spawnedTransform.gameObject);
+                spawnedSkeletons.Add(skeletonAnimation);
             }
         }
 
@@ -110,6 +153,7 @@ namespace OptimizedSpine.Benchmark
             }
 
             spawned.Clear();
+            spawnedSkeletons.Clear();
         }
 
         private void Play(SkeletonAnimation skeletonAnimation, SpineRuntimeAnimation animation, int index)
@@ -143,6 +187,14 @@ namespace OptimizedSpine.Benchmark
 
             spawnedObject.SetActive(true);
             return skeletonAnimation;
+        }
+
+        private void ApplyUpdateMode(SkeletonAnimation skeletonAnimation)
+        {
+            if (skeletonAnimation == null)
+                return;
+
+            skeletonAnimation.enabled = updateMode == SpineBenchmarkUpdateMode.Baseline;
         }
     }
 }

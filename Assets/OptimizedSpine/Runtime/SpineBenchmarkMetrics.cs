@@ -42,6 +42,7 @@ namespace OptimizedSpine.Benchmark
             textBuilder.Clear();
             textBuilder.AppendLine("Optimized Spine Baseline");
             textBuilder.Append("Instances: ").Append(spawner != null ? spawner.SpawnedCount : 0).AppendLine();
+            textBuilder.Append("Update Mode: ").Append(spawner != null ? spawner.UpdateModeLabel : "Unknown").AppendLine();
             textBuilder.Append("FPS: ").Append(fps.ToString("0.0")).AppendLine();
             textBuilder.Append("Frame: ").Append(frameMs.ToString("0.00")).AppendLine(" ms");
             textBuilder.Append("Mono Used: ").Append(FormatBytes(Profiler.GetMonoUsedSizeLong())).AppendLine();

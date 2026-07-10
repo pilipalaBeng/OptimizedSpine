@@ -31,6 +31,7 @@ namespace OptimizedSpine.EditorTools.Benchmarking
             AddWarningIfDifferent(comparison, "Scene", baseline.ScenePath, candidate.ScenePath);
             AddWarningIfDifferent(comparison, "Skeleton Asset", baseline.SkeletonAssetPath, candidate.SkeletonAssetPath);
             AddWarningIfDifferent(comparison, "Animation", baseline.AnimationName, candidate.AnimationName);
+            AddWarningIfDifferent(comparison, "Update Mode", baseline.UpdateMode, candidate.UpdateMode);
             AddWarningIfDifferent(comparison, "Unity", baseline.UnityVersion, candidate.UnityVersion);
             AddWarningIfDifferent(comparison, "spine-unity", baseline.SpineUnityVersion, candidate.SpineUnityVersion);
             AddWarningIfSecondsDifferent(comparison, "Target Sample Window", baseline.TargetSampleSeconds, candidate.TargetSampleSeconds);

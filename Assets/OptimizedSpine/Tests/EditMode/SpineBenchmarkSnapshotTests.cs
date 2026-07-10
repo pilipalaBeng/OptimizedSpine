@@ -18,6 +18,7 @@ namespace OptimizedSpine.Tests
                 SkeletonAssetPath = "Assets/Samples/spineboy-pro_SkeletonData.asset",
                 AnimationName = "run",
                 InstanceCount = 25,
+                UpdateMode = "CentralizedUpdate",
                 WarmupSeconds = 3f,
                 TargetSampleSeconds = 10f,
                 SampleSeconds = 10f,
@@ -37,6 +38,7 @@ namespace OptimizedSpine.Tests
             Assert.That(markdown, Does.Contain("| Unity | `2022.3.62f2` |"));
             Assert.That(markdown, Does.Contain("| spine-unity | `4.3.95` |"));
             Assert.That(markdown, Does.Contain("| Instance Count | `25` |"));
+            Assert.That(markdown, Does.Contain("| Update Mode | `CentralizedUpdate` |"));
             Assert.That(markdown, Does.Contain("| Target Sample Window | `10 s` |"));
             Assert.That(markdown, Does.Contain("| Actual Sample Window | `10 s` |"));
             Assert.That(markdown, Does.Contain("| Average FPS | `60.0` |"));

@@ -41,6 +41,7 @@
 - Metrics overlay: Game view top-left, large red text, including snapshot sampling status.
 - Snapshot recorder: `BenchmarkRunner` includes `SpineBenchmarkSnapshotRecorder`, default warmup `3s`, sample window `10s`, output `docs/experiments/`.
 - Snapshot export guard: `OptimizedSpine/Write Benchmark Snapshot` only writes complete sampled measurements by default. It warns on no-sample or partial captures.
+- Update mode experiment: `SpineBenchmarkSpawner` supports `Baseline` and `CentralizedUpdate`. `CentralizedUpdate` disables each spawned `SkeletonAnimation` component and calls `SkeletonAnimation.Update(delta)` plus `SkeletonAnimation.Renderer.LateUpdate()` from the spawner, following spine-unity's fixed timestep sample pattern.
 - Benchmark runtime component Inspector fields use Chinese `InspectorName` labels and Chinese `Tooltip` text while keeping serialized field names stable.
 - Main runtime scripts:
   - `Assets/OptimizedSpine/Runtime/SpineBenchmarkSpawner.cs`
@@ -102,9 +103,10 @@ Build an Editor Window that inspects selected Spine prefab / asset and reports s
 - Add a file under `docs/experiments/` for each reproducible performance experiment.
 - Each record should include Unity version, spine-unity version, scene, asset source, variables, measurement method, and conclusion.
 - Use `OptimizedSpine/Benchmark Presets` before sampling to keep instance count and experiment name aligned.
+- Choose the intended `Update Mode` in `OptimizedSpine/Benchmark Presets` before sampling. Compare `Baseline_25` against `CentralizedUpdate_25` only when the rest of the context matches.
 - Use `OptimizedSpine/Write Benchmark Snapshot` after the Play Mode overlay shows `Snapshot: Complete` to export raw benchmark records.
 - Do not compare no-sample or partial snapshots as optimization evidence. They are debugging artifacts only.
-- Use `OptimizedSpine/Compare Benchmark Snapshots` to compare two generated snapshots and catch context mismatches before interpreting results, including sample window mismatches and incomplete actual sample windows.
+- Use `OptimizedSpine/Compare Benchmark Snapshots` to compare two generated snapshots and catch context mismatches before interpreting results, including update mode, sample window mismatches, and incomplete actual sample windows.
 - Treat generated snapshots as raw measurements. Compare snapshots before claiming an optimization gain.
 - Without measurement data, write only assumptions or observations. Do not present them as verified optimization conclusions.
 

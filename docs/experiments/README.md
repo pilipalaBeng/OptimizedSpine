@@ -21,6 +21,7 @@ Generated snapshots from `OptimizedSpine/Write Benchmark Snapshot` also land in 
 - Branch / commit:
 - Scene:
 - Test asset:
+- Update mode:
 
 ## Goal
 

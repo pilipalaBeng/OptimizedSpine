@@ -133,6 +133,7 @@ namespace OptimizedSpine.EditorTools
             EditorGUILayout.LabelField("Candidate", comparison.Candidate.SourcePath);
             EditorGUILayout.LabelField("实例数", $"{comparison.Baseline.InstanceCount} -> {comparison.Candidate.InstanceCount}");
             EditorGUILayout.LabelField("动画", $"{comparison.Baseline.AnimationName} -> {comparison.Candidate.AnimationName}");
+            EditorGUILayout.LabelField("更新模式", $"{comparison.Baseline.UpdateMode} -> {comparison.Candidate.UpdateMode}");
             EditorGUILayout.LabelField("采样窗口", $"{FormatSampleWindow(comparison.Baseline)} -> {FormatSampleWindow(comparison.Candidate)}");
         }
 
