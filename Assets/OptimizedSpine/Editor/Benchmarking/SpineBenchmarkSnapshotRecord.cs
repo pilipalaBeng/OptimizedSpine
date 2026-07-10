@@ -12,6 +12,9 @@ namespace OptimizedSpine.EditorTools.Benchmarking
         public string AnimationName { get; set; } = string.Empty;
         public string Status { get; set; } = string.Empty;
         public int InstanceCount { get; set; }
+        public double WarmupSeconds { get; set; }
+        public double TargetSampleSeconds { get; set; }
+        public double ActualSampleSeconds { get; set; }
         public int SampleCount { get; set; }
         public double AverageFps { get; set; }
         public double AverageFrameMs { get; set; }

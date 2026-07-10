@@ -39,7 +39,7 @@
 - 导出的 markdown 是 raw snapshot，只记录当前场景条件和基础指标；需要与另一份 snapshot 对比后，才能说某个设置带来了优化收益。
 - Benchmark runtime 组件的 Inspector 字段使用中文显示名和中文 Tooltip，方便直接调实例数、布局和采样窗口。
 - `Benchmark Presets` 用来固定测量条件，避免一次跑 `25` 实例、下一次误跑成 `20` 实例。
-- `Compare Benchmark Snapshots` 会提示关键上下文是否一致，例如 `Instance Count`、场景、Skeleton、动画、Unity / spine-unity 版本。
+- `Compare Benchmark Snapshots` 会提示关键上下文是否一致，例如 `Instance Count`、场景、Skeleton、动画、Unity / spine-unity 版本、采样窗口。
 
 ## Analyzer Tool
 

@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.IO;
 using OptimizedSpine.EditorTools.Benchmarking;
 using UnityEditor;
@@ -132,6 +133,7 @@ namespace OptimizedSpine.EditorTools
             EditorGUILayout.LabelField("Candidate", comparison.Candidate.SourcePath);
             EditorGUILayout.LabelField("实例数", $"{comparison.Baseline.InstanceCount} -> {comparison.Candidate.InstanceCount}");
             EditorGUILayout.LabelField("动画", $"{comparison.Baseline.AnimationName} -> {comparison.Candidate.AnimationName}");
+            EditorGUILayout.LabelField("采样窗口", $"{FormatSampleWindow(comparison.Baseline)} -> {FormatSampleWindow(comparison.Candidate)}");
         }
 
         private static void DrawContextWarnings(SpineBenchmarkSnapshotComparison comparison)
@@ -193,6 +195,18 @@ namespace OptimizedSpine.EditorTools
         private static string FormatValue(double value, string unit)
         {
             return $"{value:0.##} {unit}";
+        }
+
+        private static string FormatSampleWindow(SpineBenchmarkSnapshotRecord record)
+        {
+            return FormatSeconds(record.ActualSampleSeconds) + "/" + FormatSeconds(record.TargetSampleSeconds);
+        }
+
+        private static string FormatSeconds(double seconds)
+        {
+            return seconds > 0d
+                ? seconds.ToString("0.##", CultureInfo.InvariantCulture) + " s"
+                : "Unknown";
         }
 
         private static string FormatSigned(double value, string unit)

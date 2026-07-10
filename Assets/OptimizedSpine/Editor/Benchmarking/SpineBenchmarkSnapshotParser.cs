@@ -38,6 +38,13 @@ namespace OptimizedSpine.EditorTools.Benchmarking
             record.AnimationName = Get(fields, "Animation");
             record.Status = Get(fields, "Status");
             record.InstanceCount = ParseInt(Get(fields, "Instance Count"));
+            record.WarmupSeconds = ParseDouble(Get(fields, "Warmup"));
+            record.TargetSampleSeconds = ParseDouble(FirstNonEmpty(
+                Get(fields, "Target Sample Window"),
+                Get(fields, "Sample Window")));
+            record.ActualSampleSeconds = ParseDouble(FirstNonEmpty(
+                Get(fields, "Actual Sample Window"),
+                Get(fields, "Sample Window")));
             record.SampleCount = ParseInt(Get(fields, "Sample Count"));
             record.AverageFps = ParseDouble(Get(fields, "Average FPS"));
             record.AverageFrameMs = ParseDouble(Get(fields, "Average Frame Time"));
@@ -78,6 +85,11 @@ namespace OptimizedSpine.EditorTools.Benchmarking
         private static string Get(Dictionary<string, string> fields, string key)
         {
             return fields.TryGetValue(key, out string value) ? value : string.Empty;
+        }
+
+        private static string FirstNonEmpty(string preferred, string fallback)
+        {
+            return string.IsNullOrWhiteSpace(preferred) ? fallback : preferred;
         }
 
         private static int ParseInt(string value)

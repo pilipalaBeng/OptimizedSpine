@@ -104,7 +104,7 @@ Build an Editor Window that inspects selected Spine prefab / asset and reports s
 - Use `OptimizedSpine/Benchmark Presets` before sampling to keep instance count and experiment name aligned.
 - Use `OptimizedSpine/Write Benchmark Snapshot` after the Play Mode overlay shows `Snapshot: Complete` to export raw benchmark records.
 - Do not compare no-sample or partial snapshots as optimization evidence. They are debugging artifacts only.
-- Use `OptimizedSpine/Compare Benchmark Snapshots` to compare two generated snapshots and catch context mismatches before interpreting results.
+- Use `OptimizedSpine/Compare Benchmark Snapshots` to compare two generated snapshots and catch context mismatches before interpreting results, including sample window mismatches and incomplete actual sample windows.
 - Treat generated snapshots as raw measurements. Compare snapshots before claiming an optimization gain.
 - Without measurement data, write only assumptions or observations. Do not present them as verified optimization conclusions.
 
