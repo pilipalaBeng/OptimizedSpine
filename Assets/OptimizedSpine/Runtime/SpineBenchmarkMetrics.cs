@@ -10,6 +10,9 @@ namespace OptimizedSpine.Benchmark
         [SerializeField, InspectorName("生成器"), Tooltip("读取实例数量的 Spine benchmark 生成器。")]
         private SpineBenchmarkSpawner spawner;
 
+        [SerializeField, InspectorName("Snapshot 记录器"), Tooltip("显示 benchmark snapshot 的预热、采样和完成状态。")]
+        private SpineBenchmarkSnapshotRecorder recorder;
+
         [Header("显示设置")]
         [SerializeField, InspectorName("平滑系数"), Min(0.01f), Tooltip("FPS 和 frame time 的平滑速度，数值越大越贴近瞬时变化。")]
         private float smoothing = 0.1f;
@@ -20,6 +23,7 @@ namespace OptimizedSpine.Benchmark
         private readonly StringBuilder textBuilder = new StringBuilder(256);
         private float smoothedDeltaTime;
         private GUIStyle labelStyle;
+        private SpineBenchmarkSnapshotRecorder cachedRecorder;
 
         private void Awake()
         {
@@ -43,6 +47,13 @@ namespace OptimizedSpine.Benchmark
             textBuilder.Append("Mono Used: ").Append(FormatBytes(Profiler.GetMonoUsedSizeLong())).AppendLine();
             textBuilder.Append("Total Allocated: ").Append(FormatBytes(Profiler.GetTotalAllocatedMemoryLong()));
 
+            SpineBenchmarkSnapshotRecorder activeRecorder = ResolveRecorder();
+            if (activeRecorder != null)
+            {
+                textBuilder.AppendLine();
+                textBuilder.Append("Snapshot: ").Append(activeRecorder.SamplingStatusLabel);
+            }
+
             GUI.Label(new Rect(12f, 12f, 520f, 240f), textBuilder.ToString(), labelStyle);
         }
 
@@ -57,6 +68,17 @@ namespace OptimizedSpine.Benchmark
                 normal = { textColor = Color.red },
                 padding = new RectOffset(10, 10, 8, 8)
             };
+        }
+
+        private SpineBenchmarkSnapshotRecorder ResolveRecorder()
+        {
+            if (recorder != null)
+                return recorder;
+
+            if (cachedRecorder == null)
+                cachedRecorder = GetComponent<SpineBenchmarkSnapshotRecorder>();
+
+            return cachedRecorder;
         }
 
         private static string FormatBytes(long bytes)

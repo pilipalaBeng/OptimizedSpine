@@ -3,6 +3,13 @@ using System.Text;
 
 namespace OptimizedSpine.Benchmark
 {
+    public enum SpineBenchmarkSamplingStatus
+    {
+        WarmingUp,
+        Sampling,
+        Complete
+    }
+
     public sealed class SpineBenchmarkSnapshot
     {
         public string ExperimentName { get; set; } = "Spine Benchmark Snapshot";
@@ -14,6 +21,7 @@ namespace OptimizedSpine.Benchmark
         public string AnimationName { get; set; } = string.Empty;
         public int InstanceCount { get; set; }
         public float WarmupSeconds { get; set; }
+        public float TargetSampleSeconds { get; set; }
         public float SampleSeconds { get; set; }
         public int SampleCount { get; set; }
         public float AverageFps { get; set; }
@@ -23,12 +31,15 @@ namespace OptimizedSpine.Benchmark
         public long MonoUsedBytes { get; set; }
         public long TotalAllocatedBytes { get; set; }
         public bool Completed { get; set; }
+
+        public bool CanExportAsMeasurement => Completed && SampleCount > 0;
     }
 
     public readonly struct SpineBenchmarkFrameSummary
     {
         public SpineBenchmarkFrameSummary(
             float warmupSeconds,
+            float targetSampleSeconds,
             float sampleSeconds,
             int sampleCount,
             float averageFps,
@@ -37,9 +48,11 @@ namespace OptimizedSpine.Benchmark
             float maxFrameMs,
             long maxMonoUsedBytes,
             long maxTotalAllocatedBytes,
-            bool completed)
+            bool completed,
+            SpineBenchmarkSamplingStatus status)
         {
             WarmupSeconds = warmupSeconds;
+            TargetSampleSeconds = targetSampleSeconds;
             SampleSeconds = sampleSeconds;
             SampleCount = sampleCount;
             AverageFps = averageFps;
@@ -49,9 +62,11 @@ namespace OptimizedSpine.Benchmark
             MaxMonoUsedBytes = maxMonoUsedBytes;
             MaxTotalAllocatedBytes = maxTotalAllocatedBytes;
             Completed = completed;
+            Status = status;
         }
 
         public float WarmupSeconds { get; }
+        public float TargetSampleSeconds { get; }
         public float SampleSeconds { get; }
         public int SampleCount { get; }
         public float AverageFps { get; }
@@ -61,6 +76,7 @@ namespace OptimizedSpine.Benchmark
         public long MaxMonoUsedBytes { get; }
         public long MaxTotalAllocatedBytes { get; }
         public bool Completed { get; }
+        public SpineBenchmarkSamplingStatus Status { get; }
     }
 
     public sealed class SpineBenchmarkFrameAccumulator
@@ -84,6 +100,19 @@ namespace OptimizedSpine.Benchmark
         }
 
         public bool IsComplete => sampledSeconds >= targetSampleSeconds;
+
+        public SpineBenchmarkSamplingStatus Status
+        {
+            get
+            {
+                if (IsComplete)
+                    return SpineBenchmarkSamplingStatus.Complete;
+
+                return elapsedSeconds < warmupSeconds
+                    ? SpineBenchmarkSamplingStatus.WarmingUp
+                    : SpineBenchmarkSamplingStatus.Sampling;
+            }
+        }
 
         public void RecordFrame(float deltaSeconds, long monoUsedBytes, long totalAllocatedBytes)
         {
@@ -119,6 +148,7 @@ namespace OptimizedSpine.Benchmark
 
             return new SpineBenchmarkFrameSummary(
                 warmupSeconds,
+                targetSampleSeconds,
                 sampledSeconds,
                 sampleCount,
                 averageFps,
@@ -127,7 +157,8 @@ namespace OptimizedSpine.Benchmark
                 sampleCount > 0 ? maxFrameMs : 0f,
                 maxMonoUsedBytes,
                 maxTotalAllocatedBytes,
-                IsComplete);
+                IsComplete,
+                Status);
         }
     }
 
@@ -153,8 +184,9 @@ namespace OptimizedSpine.Benchmark
             AppendRow(builder, "Animation", snapshot.AnimationName);
             AppendRow(builder, "Instance Count", snapshot.InstanceCount.ToString(CultureInfo.InvariantCulture));
             AppendRow(builder, "Warmup", FormatSeconds(snapshot.WarmupSeconds));
-            AppendRow(builder, "Sample Window", FormatSeconds(snapshot.SampleSeconds));
-            AppendRow(builder, "Status", snapshot.Completed ? "Complete" : "Partial");
+            AppendRow(builder, "Target Sample Window", FormatSeconds(snapshot.TargetSampleSeconds));
+            AppendRow(builder, "Actual Sample Window", FormatSeconds(snapshot.SampleSeconds));
+            AppendRow(builder, "Status", FormatStatus(snapshot));
 
             builder.AppendLine();
             builder.AppendLine("## Metrics");
@@ -171,9 +203,20 @@ namespace OptimizedSpine.Benchmark
             builder.AppendLine();
             builder.AppendLine("## Conclusion");
             builder.AppendLine();
+            if (!snapshot.CanExportAsMeasurement)
+                builder.AppendLine("Incomplete snapshot. Wait for Complete status before comparing optimization results.");
+
             builder.AppendLine("Raw snapshot only. Compare against another snapshot before claiming an optimization gain.");
 
             return builder.ToString();
+        }
+
+        private static string FormatStatus(SpineBenchmarkSnapshot snapshot)
+        {
+            if (snapshot.CanExportAsMeasurement)
+                return "Complete";
+
+            return snapshot.SampleCount > 0 ? "Partial" : "No Samples";
         }
 
         private static void AppendTableHeader(StringBuilder builder)

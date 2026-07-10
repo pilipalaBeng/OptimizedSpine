@@ -26,13 +26,16 @@
 - `OptimizedSpine/Build Baseline Scene`: 重新生成 baseline 场景。
 - `OptimizedSpine/Validate Baseline Spawner`: 在编辑器中临时生成 3 个 Spine 实例并清理，用于快速验证 spawner 创建链路。
 - `OptimizedSpine/Benchmark Presets`: 一键设置 `10 / 25 / 50 / 100` 实例，并同步 snapshot 实验名称。
-- `OptimizedSpine/Write Benchmark Snapshot`: 将当前场景里的 benchmark 采样结果导出到 `docs/experiments/`。
+- `OptimizedSpine/Write Benchmark Snapshot`: 在 Play Mode 采样完成后，将 benchmark 结果导出到 `docs/experiments/`。
 - `OptimizedSpine/Compare Benchmark Snapshots`: 选择两份 snapshot markdown，对比 FPS、frame time 和 memory 差异。
 
 ## Benchmark Snapshot
 
 - `BenchmarkRunner` 上的 `SpineBenchmarkSnapshotRecorder` 会在 Play Mode 中先 warmup，再采集一段固定时长的 frame/memory 数据。
 - 默认采样口径: warmup `3s`，sample window `10s`，输出目录 `docs/experiments/`。
+- Game 视图 overlay 会显示 `Snapshot: WarmingUp / Sampling / Complete` 和实际/目标采样秒数；等它显示 `Complete` 后再导出。
+- `Write Benchmark Snapshot` 默认会拒绝 no-sample 或 partial 结果，避免把未完成采样误当成可对比数据。
+- 新 snapshot 会同时记录 `Target Sample Window` 和 `Actual Sample Window`，方便检查采样是否跑满。
 - 导出的 markdown 是 raw snapshot，只记录当前场景条件和基础指标；需要与另一份 snapshot 对比后，才能说某个设置带来了优化收益。
 - Benchmark runtime 组件的 Inspector 字段使用中文显示名和中文 Tooltip，方便直接调实例数、布局和采样窗口。
 - `Benchmark Presets` 用来固定测量条件，避免一次跑 `25` 实例、下一次误跑成 `20` 实例。

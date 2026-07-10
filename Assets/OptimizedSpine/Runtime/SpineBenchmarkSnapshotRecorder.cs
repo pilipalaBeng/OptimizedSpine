@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.IO;
 using UnityEngine;
 using UnityEngine.Profiling;
@@ -36,6 +37,8 @@ namespace OptimizedSpine.Benchmark
         private SpineBenchmarkFrameAccumulator accumulator;
 
         public bool IsComplete => accumulator != null && accumulator.IsComplete;
+        public SpineBenchmarkSamplingStatus SamplingStatus => GetSummary().Status;
+        public string SamplingStatusLabel => FormatSamplingStatus(GetSummary());
 
         private void OnEnable()
         {
@@ -62,7 +65,36 @@ namespace OptimizedSpine.Benchmark
         [ContextMenu("Write Benchmark Snapshot")]
         public string WriteSnapshot()
         {
+            if (TryWriteSnapshot(out string path, out _))
+                return path;
+
+            return string.Empty;
+        }
+
+        public bool TryWriteSnapshot(out string path, out string reason)
+        {
             SpineBenchmarkSnapshot snapshot = BuildSnapshot();
+            if (!snapshot.CanExportAsMeasurement)
+            {
+                path = string.Empty;
+                reason = BuildIncompleteSnapshotReason(snapshot);
+                Debug.LogWarning(reason, this);
+                return false;
+            }
+
+            path = WriteSnapshotFile(snapshot);
+            reason = string.Empty;
+            return true;
+        }
+
+        [ContextMenu("Write Partial Benchmark Snapshot For Debug")]
+        public string WritePartialSnapshotForDebug()
+        {
+            return WriteSnapshotFile(BuildSnapshot());
+        }
+
+        private string WriteSnapshotFile(SpineBenchmarkSnapshot snapshot)
+        {
             string markdown = SpineBenchmarkSnapshotMarkdown.ToMarkdown(snapshot);
             string projectRoot = Path.GetFullPath(Path.Combine(Application.dataPath, ".."));
             string directory = Path.GetFullPath(Path.Combine(projectRoot, outputDirectory));
@@ -82,7 +114,7 @@ namespace OptimizedSpine.Benchmark
             if (accumulator == null)
                 ResetSampling();
 
-            SpineBenchmarkFrameSummary summary = accumulator.ToSummary();
+            SpineBenchmarkFrameSummary summary = GetSummary();
             Scene activeScene = SceneManager.GetActiveScene();
 
             return new SpineBenchmarkSnapshot
@@ -96,6 +128,7 @@ namespace OptimizedSpine.Benchmark
                 AnimationName = spawner != null ? spawner.AnimationName : string.Empty,
                 InstanceCount = spawner != null ? spawner.InstanceCount : 0,
                 WarmupSeconds = summary.WarmupSeconds,
+                TargetSampleSeconds = summary.TargetSampleSeconds,
                 SampleSeconds = summary.SampleSeconds,
                 SampleCount = summary.SampleCount,
                 AverageFps = summary.AverageFps,
@@ -106,6 +139,35 @@ namespace OptimizedSpine.Benchmark
                 TotalAllocatedBytes = summary.MaxTotalAllocatedBytes,
                 Completed = summary.Completed
             };
+        }
+
+        private SpineBenchmarkFrameSummary GetSummary()
+        {
+            if (accumulator == null)
+                ResetSampling();
+
+            return accumulator.ToSummary();
+        }
+
+        private static string FormatSamplingStatus(SpineBenchmarkFrameSummary summary)
+        {
+            return summary.Status + " Sample "
+                + summary.SampleSeconds.ToString("0.##", CultureInfo.InvariantCulture)
+                + "/"
+                + summary.TargetSampleSeconds.ToString("0.##", CultureInfo.InvariantCulture)
+                + " s";
+        }
+
+        private static string BuildIncompleteSnapshotReason(SpineBenchmarkSnapshot snapshot)
+        {
+            string status = snapshot.SampleCount > 0 ? "Partial" : "No Samples";
+
+            if (snapshot.SampleCount <= 0)
+                return "Benchmark snapshot is not ready: no samples have been recorded yet. Press Play and wait until the overlay shows Snapshot: Complete before writing.";
+
+            return "Benchmark snapshot is not ready: status is " + status
+                + ", actual sample window is " + snapshot.SampleSeconds.ToString("0.##", CultureInfo.InvariantCulture) + " s"
+                + " of target " + snapshot.TargetSampleSeconds.ToString("0.##", CultureInfo.InvariantCulture) + " s. Wait until Snapshot: Complete before writing.";
         }
 
         private string ResolveSkeletonAssetPath()

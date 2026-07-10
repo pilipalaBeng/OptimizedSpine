@@ -82,9 +82,19 @@ namespace OptimizedSpine.EditorTools
             }
 
             if (!EditorApplication.isPlaying)
-                Debug.LogWarning("Writing a snapshot outside Play Mode will usually produce an empty or partial sample.", recorder);
+            {
+                const string message = "Benchmark snapshot is not ready: enter Play Mode and wait until the overlay shows Snapshot: Complete before writing.";
+                Debug.LogWarning(message, recorder);
+                EditorUtility.DisplayDialog("Benchmark Snapshot Not Ready", message, "OK");
+                return;
+            }
 
-            recorder.WriteSnapshot();
+            if (!recorder.TryWriteSnapshot(out _, out string reason))
+            {
+                EditorUtility.DisplayDialog("Benchmark Snapshot Not Ready", reason, "OK");
+                return;
+            }
+
             AssetDatabase.Refresh();
         }
 
@@ -112,6 +122,7 @@ namespace OptimizedSpine.EditorTools
 
             SerializedObject metricsObject = new SerializedObject(metrics);
             metricsObject.FindProperty("spawner").objectReferenceValue = spawner;
+            metricsObject.FindProperty("recorder").objectReferenceValue = recorder;
             metricsObject.FindProperty("smoothing").floatValue = 0.1f;
             metricsObject.FindProperty("targetFrameRate").intValue = -1;
             metricsObject.ApplyModifiedPropertiesWithoutUndo();
