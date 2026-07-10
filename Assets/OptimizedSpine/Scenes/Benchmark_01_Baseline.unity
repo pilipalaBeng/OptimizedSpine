@@ -122,7 +122,7 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &561732581
+--- !u!1 &513790031
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -130,10 +130,10 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 561732584}
-  - component: {fileID: 561732583}
-  - component: {fileID: 561732582}
-  - component: {fileID: 561732585}
+  - component: {fileID: 513790035}
+  - component: {fileID: 513790034}
+  - component: {fileID: 513790033}
+  - component: {fileID: 513790032}
   m_Layer: 0
   m_Name: BenchmarkRunner
   m_TagString: Untagged
@@ -141,47 +141,48 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &561732582
+--- !u!114 &513790032
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 561732581}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 784644fb86673e649970c71ed4b17188, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
-  spawner: {fileID: 561732583}
-  smoothing: 0.1
-  targetFrameRate: -1
---- !u!114 &561732585
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 561732581}
+  m_GameObject: {fileID: 513790031}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e293ed36ab784589862dde6cbc737742, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
-  spawner: {fileID: 561732583}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawner: {fileID: 513790034}
   experimentName: Baseline
-  skeletonAssetPath: Assets/Samples/spine-unity Runtime/4.3.95/Spine Examples/Spine Skeletons/spineboy-pro/spineboy-pro_SkeletonData.asset
+  skeletonAssetPath: Assets/Samples/spine-unity Runtime/4.3.95/Spine Examples/Spine
+    Skeletons/spineboy-pro/spineboy-pro_SkeletonData.asset
   spineUnityVersion: 4.3.95
   warmupSeconds: 3
   sampleSeconds: 10
   outputDirectory: docs/experiments
---- !u!114 &561732583
+--- !u!114 &513790033
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 561732581}
+  m_GameObject: {fileID: 513790031}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 784644fb86673e649970c71ed4b17188, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawner: {fileID: 513790034}
+  smoothing: 0.1
+  targetFrameRate: -1
+--- !u!114 &513790034
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 513790031}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ab640ea00e46f2341b22bc008e3b498a, type: 3}
@@ -196,13 +197,13 @@ MonoBehaviour:
   rebuildOnStart: 1
   playAnimation: 1
   randomizeStartTime: 1
---- !u!4 &561732584
+--- !u!4 &513790035
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 561732581}
+  m_GameObject: {fileID: 513790031}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -211,7 +212,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &2016180477
+--- !u!1 &1834055534
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -219,9 +220,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2016180480}
-  - component: {fileID: 2016180479}
-  - component: {fileID: 2016180478}
+  - component: {fileID: 1834055537}
+  - component: {fileID: 1834055536}
+  - component: {fileID: 1834055535}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -229,21 +230,21 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &2016180478
+--- !u!81 &1834055535
 AudioListener:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2016180477}
+  m_GameObject: {fileID: 1834055534}
   m_Enabled: 1
---- !u!20 &2016180479
+--- !u!20 &1834055536
 Camera:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2016180477}
+  m_GameObject: {fileID: 1834055534}
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
@@ -288,13 +289,13 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!4 &2016180480
+--- !u!4 &1834055537
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2016180477}
+  m_GameObject: {fileID: 1834055534}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -10}
@@ -307,5 +308,5 @@ Transform:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 2016180480}
-  - {fileID: 561732584}
+  - {fileID: 1834055537}
+  - {fileID: 513790035}
