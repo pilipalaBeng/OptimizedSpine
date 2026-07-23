@@ -116,7 +116,7 @@ namespace OptimizedSpine.Benchmark
             SpineRuntimeAnimation animation = !string.IsNullOrEmpty(animationName) ? skeletonData.FindAnimation(animationName) : null;
 
             if (playAnimation && animation == null && !string.IsNullOrEmpty(animationName))
-                Debug.LogWarning($"Spine animation '{animationName}' was not found on {skeletonDataAsset.name}.", this);
+                Debug.LogWarning($"Spine animation '{animationName}' was not found on {skeletonDataAsset.name}.");
 
             for (int index = 0; index < instanceCount; index++)
             {

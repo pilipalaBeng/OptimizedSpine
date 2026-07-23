@@ -43,6 +43,7 @@
 - Snapshot export guard: `OptimizedSpine/Write Benchmark Snapshot` only writes complete sampled measurements by default. It warns on no-sample or partial captures.
 - Update mode experiment: `SpineBenchmarkSpawner` supports `Baseline` and `CentralizedUpdate`. `CentralizedUpdate` disables each spawned `SkeletonAnimation` component and calls `SkeletonAnimation.Update(delta)` plus `SkeletonAnimation.Renderer.LateUpdate()` from the spawner, following spine-unity's fixed timestep sample pattern.
 - Benchmark runtime component Inspector fields use Chinese `InspectorName` labels and Chinese `Tooltip` text while keeping serialized field names stable.
+- Runtime benchmark scripts should not pass Play Mode objects as `Debug.Log` context, because Unity Editor Console/UI Toolkit can keep drawing stale object references after Play Mode exits and emit `MissingReferenceException` noise.
 - Main runtime scripts:
   - `Assets/OptimizedSpine/Runtime/SpineBenchmarkSpawner.cs`
   - `Assets/OptimizedSpine/Runtime/SpineBenchmarkMetrics.cs`

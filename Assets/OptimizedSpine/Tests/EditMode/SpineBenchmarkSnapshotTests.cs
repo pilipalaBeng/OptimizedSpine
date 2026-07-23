@@ -1,3 +1,4 @@
+using System.IO;
 using NUnit.Framework;
 using OptimizedSpine.Benchmark;
 
@@ -119,6 +120,30 @@ namespace OptimizedSpine.Tests
             Assert.That(noSamples.CanExportAsMeasurement, Is.False);
             Assert.That(partial.CanExportAsMeasurement, Is.False);
             Assert.That(complete.CanExportAsMeasurement, Is.True);
+        }
+
+        [Test]
+        public void RuntimeScripts_DoNotLogWithPlayModeContext()
+        {
+            string runtimeDirectory = Path.Combine(
+                "Assets",
+                "OptimizedSpine",
+                "Runtime");
+
+            foreach (string sourcePath in Directory.GetFiles(runtimeDirectory, "*.cs", SearchOption.TopDirectoryOnly))
+            {
+                string[] lines = File.ReadAllLines(sourcePath);
+
+                for (int index = 0; index < lines.Length; index++)
+                {
+                    string line = lines[index];
+                    bool logsWithPlayModeContext = line.Contains("Debug.Log") && line.Contains(", this");
+                    Assert.That(
+                        logsWithPlayModeContext,
+                        Is.False,
+                        $"{sourcePath}:{index + 1} should not pass Play Mode objects as Debug log context.");
+                }
+            }
         }
     }
 }

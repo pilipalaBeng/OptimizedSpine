@@ -78,7 +78,7 @@ namespace OptimizedSpine.Benchmark
             {
                 path = string.Empty;
                 reason = BuildIncompleteSnapshotReason(snapshot);
-                Debug.LogWarning(reason, this);
+                Debug.LogWarning(reason);
                 return false;
             }
 
@@ -105,7 +105,7 @@ namespace OptimizedSpine.Benchmark
             string path = Path.Combine(directory, fileName);
             File.WriteAllText(path, markdown);
 
-            Debug.Log($"Wrote Spine benchmark snapshot: {path}", this);
+            Debug.Log($"Wrote Spine benchmark snapshot: {path}");
             return path;
         }
 
