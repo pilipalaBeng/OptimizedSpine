@@ -102,6 +102,7 @@ Build an Editor Window that inspects selected Spine prefab / asset and reports s
 
 - Add a file under `docs/experiments/` for each reproducible performance experiment.
 - Each record should include Unity version, spine-unity version, scene, asset source, variables, measurement method, and conclusion.
+- 2026-07-23 comparison record: `docs/experiments/2026-07-23-baseline-vs-centralizedupdate-25.md`. The single-run `25` instance pair did not show a CPU/frame-time gain from `CentralizedUpdate`; average FPS and average frame time were worse, while `Total Allocated` was lower. Repeat before treating this as a durable conclusion.
 - Use `OptimizedSpine/Benchmark Presets` before sampling to keep instance count and experiment name aligned.
 - Choose the intended `Update Mode` in `OptimizedSpine/Benchmark Presets` before sampling. Compare `Baseline_25` against `CentralizedUpdate_25` only when the rest of the context matches.
 - Use `OptimizedSpine/Write Benchmark Snapshot` after the Play Mode overlay shows `Snapshot: Complete` to export raw benchmark records.
